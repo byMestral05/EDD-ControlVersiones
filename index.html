@@ -45,6 +45,15 @@
 
   <script>
     /**
+     * Comprueba que el valor sea un entero entre -99999 y 99999.
+     * @param {string} valor texto introducido
+     * @returns {boolean} true si es valido
+     */
+    function esValido(valor) {
+      return /^-?\d{1,5}$/.test(valor);
+    }
+
+    /**
      * Muestra un mensaje en la zona de resultado.
      * @param {string} texto mensaje a mostrar
      * @param {boolean} error true si es un error (se pinta en rojo)
@@ -64,6 +73,10 @@
       const a = document.getElementById("a").value.trim();
       const b = document.getElementById("b").value.trim();
       const op = document.getElementById("op").value;
+      if (!esValido(a) || !esValido(b)) {
+        mostrar("Error: solo se admiten enteros entre -99999 y 99999", true);
+        return;
+      }
       try {
         const respuesta = await fetch("/calcular?a=" + encodeURIComponent(a)
           + "&b=" + encodeURIComponent(b) + "&op=" + op);
