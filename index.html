@@ -35,5 +35,37 @@
   <!-- Zona donde se muestra el resultado -->
   <p id="resultado"></p>
 
+  <script>
+    /**
+     * Muestra un mensaje en la zona de resultado.
+     * @param {string} texto mensaje a mostrar
+     * @param {boolean} error true si es un error (se pinta en rojo)
+     */
+    function mostrar(texto, error) {
+      const zona = document.getElementById("resultado");
+      zona.textContent = texto;
+      zona.className = error ? "error" : "";
+    }
+
+    /**
+     * Lee el formulario, valida los datos y pide el calculo al backend.
+     * @param {Event} evento envio del formulario
+     */
+    async function calcular(evento) {
+      evento.preventDefault();
+      const a = document.getElementById("a").value.trim();
+      const b = document.getElementById("b").value.trim();
+      const op = document.getElementById("op").value;
+      try {
+        const respuesta = await fetch("/calcular?a=" + encodeURIComponent(a)
+          + "&b=" + encodeURIComponent(b) + "&op=" + op);
+        mostrar(await respuesta.text(), !respuesta.ok);
+      } catch (e) {
+        mostrar("Error: no se pudo conectar con el backend", true);
+      }
+    }
+
+    document.getElementById("formulario").addEventListener("submit", calcular);
+  </script>
 </body>
 </html>
