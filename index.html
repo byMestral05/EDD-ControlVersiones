@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!--
+  Calculadora - frontend en HTML.
+  Envia los operandos al backend Java (Calculadora.java) y muestra el resultado.
+  Operaciones permitidas: suma, resta, multiplicacion y potencia.
+  Operandos: numeros enteros entre -99999 y 99999.
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora</title>
+</head>
+<body>
+  <h1>Calculadora</h1>
+
+  <!-- Formulario con los dos operandos y la operacion -->
+  <form id="formulario">
+    <label>Primer numero
+      <input id="a" type="number" min="-99999" max="99999" step="1" required>
+    </label>
+    <label>Operacion
+      <select id="op">
+        <option value="suma">Suma (+)</option>
+        <option value="resta">Resta (-)</option>
+        <option value="multiplicacion">Multiplicacion (x)</option>
+        <option value="potencia">Potencia (^)</option>
+      </select>
+    </label>
+    <label>Segundo numero
+      <input id="b" type="number" min="-99999" max="99999" step="1" required>
+    </label>
+    <button type="submit">Calcular</button>
+  </form>
+
+  <!-- Zona donde se muestra el resultado -->
+  <p id="resultado"></p>
+
+</body>
+</html>
