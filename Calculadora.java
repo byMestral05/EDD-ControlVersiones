@@ -21,6 +21,12 @@ import java.util.Map;
  */
 public class Calculadora {
 
+    /** Valor minimo permitido para los operandos. */
+    private static final int MINIMO = -99999;
+
+    /** Valor maximo permitido para los operandos. */
+    private static final int MAXIMO = 99999;
+
     /** Puerto en el que escucha el servidor. */
     private static final int PUERTO = 8080;
 
@@ -60,8 +66,8 @@ public class Calculadora {
         int codigo = 200;
         String resultado;
         try {
-            int a = Integer.parseInt(parametros.get("a"));
-            int b = Integer.parseInt(parametros.get("b"));
+            int a = validar(parametros.get("a"));
+            int b = validar(parametros.get("b"));
             resultado = calcular(a, b, parametros.get("op"));
         } catch (IllegalArgumentException | ArithmeticException e) {
             codigo = 400;
@@ -114,6 +120,27 @@ public class Calculadora {
             throw new IllegalArgumentException("el exponente debe ser mayor o igual que 0");
         }
         return BigInteger.valueOf(base).pow(exponente).toString();
+    }
+
+    /**
+     * Comprueba que el texto sea un numero entero en el rango [-99999, 99999].
+     *
+     * @param texto valor recibido
+     * @return el valor convertido a entero
+     * @throws IllegalArgumentException si no es un entero valido o esta fuera de rango
+     */
+    static int validar(String texto) {
+        if (texto == null || !texto.matches("-?\\d+")) {
+            throw new IllegalArgumentException("solo se admiten numeros enteros");
+        }
+        if (texto.replace("-", "").length() > 5) {
+            throw new IllegalArgumentException("el numero debe estar entre " + MINIMO + " y " + MAXIMO);
+        }
+        int valor = Integer.parseInt(texto);
+        if (valor < MINIMO || valor > MAXIMO) {
+            throw new IllegalArgumentException("el numero debe estar entre " + MINIMO + " y " + MAXIMO);
+        }
+        return valor;
     }
 
     /**
