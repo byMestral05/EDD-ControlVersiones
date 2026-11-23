@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!--
+  Calculadora - frontend en HTML.
+  Envia los operandos al backend Java (Calculadora.java) y muestra el resultado.
+  Operaciones permitidas: suma, resta, multiplicacion y potencia.
+  Operandos: numeros enteros entre -99999 y 99999.
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 520px; margin: 40px auto; padding: 0 16px; }
+    form { display: grid; gap: 10px; }
+    input, select, button { font-size: 1rem; padding: 8px; }
+    button { cursor: pointer; }
+    #resultado { margin-top: 16px; padding: 12px; background: #f2f2f2; word-break: break-all; min-height: 1.4em; }
+    .error { color: #b00020; }
+  </style>
+</head>
+<body>
+  <h1>Calculadora</h1>
+
+  <!-- Formulario con los dos operandos y la operacion -->
+  <form id="formulario">
+    <label>Primer numero
+      <input id="a" type="number" min="-99999" max="99999" step="1" required>
+    </label>
+    <label>Operacion
+      <select id="op">
+        <option value="suma">Suma (+)</option>
+        <option value="resta">Resta (-)</option>
+        <option value="multiplicacion">Multiplicacion (x)</option>
+        <option value="potencia">Potencia (^)</option>
+      </select>
+    </label>
+    <label>Segundo numero
+      <input id="b" type="number" min="-99999" max="99999" step="1" required>
+    </label>
+    <button type="submit">Calcular</button>
+  </form>
+
+  <!-- Zona donde se muestra el resultado -->
+  <p id="resultado"></p>
+
+  <script>
+    /**
+     * Comprueba que el valor sea un entero entre -99999 y 99999.
+     * @param {string} valor texto introducido
+     * @returns {boolean} true si es valido
+     */
+    function esValido(valor) {
+      return /^-?\d{1,5}$/.test(valor);
+    }
+
+    /**
+     * Muestra un mensaje en la zona de resultado.
+     * @param {string} texto mensaje a mostrar
+     * @param {boolean} error true si es un error (se pinta en rojo)
+     */
+    function mostrar(texto, error) {
+      const zona = document.getElementById("resultado");
+      zona.textContent = texto;
+      zona.className = error ? "error" : "";
+    }
+
+    /**
+     * Lee el formulario, valida los datos y pide el calculo al backend.
+     * @param {Event} evento envio del formulario
+     */
+    async function calcular(evento) {
+      evento.preventDefault();
+      const a = document.getElementById("a").value.trim();
+      const b = document.getElementById("b").value.trim();
+      const op = document.getElementById("op").value;
+      if (!esValido(a) || !esValido(b)) {
+        mostrar("Error: solo se admiten enteros entre -99999 y 99999", true);
+        return;
+      }
+      try {
+        const respuesta = await fetch("/calcular?a=" + encodeURIComponent(a)
+          + "&b=" + encodeURIComponent(b) + "&op=" + op);
+        mostrar(await respuesta.text(), !respuesta.ok);
+      } catch (e) {
+        mostrar("Error: no se pudo conectar con el backend", true);
+      }
+    }
+
+    document.getElementById("formulario").addEventListener("submit", calcular);
+  </script>
+</body>
+</html>
